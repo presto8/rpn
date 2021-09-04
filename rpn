@@ -1,0 +1,39 @@
+#!/usr/bin/env python
+
+import sys
+import operator
+
+
+def fail(*args):
+    print(*args, file=sys.stderr)
+    sys.exit(1)
+
+stack = []
+ops = {
+    '+': operator.add,
+    '-': operator.sub,
+    '*': operator.mul,
+    '/': operator.truediv
+}
+
+
+def print_stack():
+    for x in stack:
+        print(f"{x:.4f}")
+
+
+def cli(args):
+    for arg in args:
+        arg = arg.strip()
+        if arg not in ops.keys():
+            stack.append(float(arg))
+        else:
+            y = stack.pop()
+            x = stack.pop()
+            answer = ops[arg](x, y)
+            stack.append(answer)
+    print_stack()
+
+
+if __name__ == '__main__':
+    cli(sys.argv[1:])
