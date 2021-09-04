@@ -24,7 +24,7 @@ Operator    Arguments    Description
    abs          1        Absolute value (|x|)
    sqrt         1        Square root (sqrt(x))
    sum        Stack      Sum of entire stack (x + y + z + w + ...)
-   d            1        Drop 1 item from stack
+   drop         1        Drop 1 item from stack
    swap         2        Swap x and y on the stack
    dupe         1        Make dupliate of top item on stack
    _text        0        Push "text" onto stack
@@ -57,7 +57,7 @@ ops = {
     'abs': Operator(operator.abs, 1),
     'sqrt': Operator(math.sqrt, 1),
     'sum': Operator(sum, 'all'),
-    'd': Operator(lambda x: x[:-1], 'all'),  # drop
+    'drop': Operator(lambda x: x[:-1], 'all'),  # drop
     'swap': Operator(lambda x, y: [y, x]),
     'dupe': Operator(lambda x: [x, x], 1),
 }

@@ -18,7 +18,7 @@ Operator    Arguments    Description
    abs          1        Absolute value (|x|)
    sqrt         1        Square root (sqrt(x))
    sum        Stack      Sum of entire stack (x + y + z + w + ...)
-   d            1        Drop 1 item from stack
+   drop         1        Drop 1 item from stack
    _text        0        Push "text" onto stack
 ```
 
