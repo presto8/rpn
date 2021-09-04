@@ -28,7 +28,10 @@ def cli(args):
     for arg in args:
         arg = arg.strip()
         if arg not in ops.keys():
-            stack.append(float(arg))
+            try:
+                stack.append(float(arg))
+            except ValueError:
+                print(f"ignoring {arg}, unable to parse")
         else:
             y = stack.pop()
             x = stack.pop()
