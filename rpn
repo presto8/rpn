@@ -8,6 +8,26 @@ from dataclasses import dataclass
 from typing import Any
 
 
+def help():
+    print("""rpn by Preston Hunt (https://github.com/presto8/rpn)
+Operator    Arguments    Description
+   +            2        Add (x+y)
+   -            2        Subtract (x-y)
+   x *          2        Multiply (x*y)
+   /            2        Divide (x/y)
+   ^            2        Power (x^y)
+   <<           2        Left shift (x << y)
+   >>           2        Right shift (x >> y)
+   <            2        Less than (1 if x < y else 0)
+   >            2        Greater than (1 if x > y else 0)
+   mod          2        Modulus (x % y)
+   abs          1        Absolute value (|x|)
+   sqrt         1        Square root (sqrt(x))
+   sum        Stack      Sum of entire stack (x + y + z + w + ...)
+   d            1        Drop 1 item from stack
+""")
+
+
 def fail(*args):
     print(*args, file=sys.stderr)
     sys.exit(1)
@@ -88,5 +108,8 @@ def rpn(args):
 
 
 if __name__ == '__main__':
-    stack = rpn(sys.argv[1:])
-    print_stack(stack)
+    if len(sys.argv) == 2 and sys.argv[1] in ["-h", "--help"]:
+        help()
+    else:
+        stack = rpn(sys.argv[1:])
+        print_stack(stack)
