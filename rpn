@@ -26,6 +26,7 @@ Operator    Arguments    Description
    sum        Stack      Sum of entire stack (x + y + z + w + ...)
    d            1        Drop 1 item from stack
    swap         2        Swap x and y on the stack
+   dupe         1        Make dupliate of top item on stack
    _text        0        Push "text" onto stack
 """)
 
@@ -58,6 +59,7 @@ ops = {
     'sum': Operator(sum, 'all'),
     'd': Operator(lambda x: x[:-1], 'all'),  # drop
     'swap': Operator(lambda x, y: [y, x]),
+    'dupe': Operator(lambda x: [x, x], 1),
 }
 
 
