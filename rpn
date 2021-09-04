@@ -25,6 +25,7 @@ Operator    Arguments    Description
    sqrt         1        Square root (sqrt(x))
    sum        Stack      Sum of entire stack (x + y + z + w + ...)
    d            1        Drop 1 item from stack
+   _text        0        Push "text" onto stack
 """)
 
 
@@ -60,7 +61,10 @@ ops = {
 
 def print_stack(stack):
     for x in stack:
-        print(f"{x:.4f}")
+        if isinstance(x, str):
+            print(x)
+        else:
+            print(f"{x:.4f}")
 
 
 def split_args(*args):
@@ -74,6 +78,8 @@ def split_args(*args):
         if arg:
             if arg in ops.keys():
                 yield arg
+            elif arg.startswith('_'):
+                yield arg
             else:
                 for op in arg:
                     yield op
@@ -82,6 +88,9 @@ def split_args(*args):
 def rpn(args):
     stack = []
     for arg in split_args(*args):
+        if arg.startswith('_'):
+            stack.append(arg)
+            continue
         try:
             stack.append(float(arg))
             continue
