@@ -17,6 +17,9 @@ ops = {
     'x': (operator.mul, 2),
     '^': (operator.pow, 2),
     '/': (operator.truediv, 2),
+    'mod': (operator.mod, 2),
+    'abs': (operator.abs, 1),
+    #    '<<': (operator.lshift, 2),  # todo: need to implement ints vs floats
     'sum': (sum, 'all'),
     '<': operator.lt,
 }
