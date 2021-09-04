@@ -28,6 +28,7 @@ ops = {
     '/': Operator(operator.truediv),
     '<': Operator(operator.lt),
     '<<': Operator(operator.lshift, arg_pre_fn=int),
+    '>>': Operator(operator.rshift, arg_pre_fn=int),
     'mod': Operator(operator.mod),
     'abs': Operator(operator.abs, 1),
     'sum': Operator(sum, 'all'),
