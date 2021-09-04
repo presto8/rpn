@@ -28,7 +28,7 @@ def print_stack(stack):
 
 
 def split_args(*args):
-    num_re = re.compile(r'([-+]?[0-9]*\.?[0-9]+)')
+    num_re = re.compile(r'([-+]?[0-9]*\.?[0-9]+(?:[eE][0-9]+)?)')
     for arg in args:
         arg = arg.strip().lower()
         while matches := num_re.match(arg):
