@@ -3,6 +3,8 @@
 import operator
 import re
 import sys
+from dataclasses import dataclass
+from typing import Any
 
 
 def fail(*args):
@@ -10,18 +12,25 @@ def fail(*args):
     sys.exit(1)
 
 
+@dataclass
+class Operator:
+    func: Any
+    arguments: int = 2
+    arg_pre_fn: Any = None
+
+
 ops = {
-    '+': (operator.add, 2),
-    '-': (operator.sub, 2),
-    '*': (operator.mul, 2),
-    'x': (operator.mul, 2),
-    '^': (operator.pow, 2),
-    '/': (operator.truediv, 2),
-    'mod': (operator.mod, 2),
-    'abs': (operator.abs, 1),
-    #    '<<': (operator.lshift, 2),  # todo: need to implement ints vs floats
-    'sum': (sum, 'all'),
-    '<': operator.lt,
+    '+': Operator(operator.add),
+    '-': Operator(operator.sub),
+    '*': Operator(operator.mul),
+    'x': Operator(operator.mul),
+    '^': Operator(operator.pow),
+    '/': Operator(operator.truediv),
+    '<': Operator(operator.lt),
+    '<<': Operator(operator.lshift, arg_pre_fn=int),
+    'mod': Operator(operator.mod),
+    'abs': Operator(operator.abs, 1),
+    'sum': Operator(sum, 'all'),
 }
 
 
@@ -54,15 +63,17 @@ def rpn(args):
             continue
         except ValueError:
             pass
-        func, stack_needed = ops[arg]
-        if stack_needed == 'all':
+        op = ops[arg]
+        if op.arguments == 'all':
             func_args = [stack]
             stack = []
         else:
-            func_args = stack[-stack_needed:]
-            stack = stack[:len(stack) - stack_needed]
+            func_args = stack[-op.arguments:]
+            stack = stack[:len(stack) - op.arguments]
+        if op.arg_pre_fn:
+            func_args = [op.arg_pre_fn(x) for x in func_args]
         try:
-            answer = func(*func_args)
+            answer = op.func(*func_args)
         except TypeError:
             print(f"{arg}: insufficient stack")
             continue
