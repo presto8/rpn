@@ -10,6 +10,7 @@ from typing import Any
 
 def help():
     print("""rpn by Preston Hunt (https://github.com/presto8/rpn)
+
 Operator    Arguments    Description
    +            2        Add (x+y)
    -            2        Subtract (x-y)
@@ -29,6 +30,28 @@ Operator    Arguments    Description
    dupe         1        Make dupliate of top item on stack
    _text        0        Push "text" onto stack
 """)
+
+
+class Rpn:
+    def __init__(self):
+        self.stack = []
+
+    def push(self, *args):
+        "Push item(s) onto stack."
+        for arg in args:
+            self.stack.append(arg)
+
+    def pop(self, n=1):
+        "Pop n items from stack."
+        pass
+
+    def eval_stack(self):
+        "Evaluate entire stack."
+        pass
+
+    def eval(self):
+        "Evaluate one time."
+        pass
 
 
 def fail(*args):
