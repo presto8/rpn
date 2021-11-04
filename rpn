@@ -21,6 +21,10 @@ Operator    Arguments    Description
    >>           2        Right shift (x >> y)
    <            2        Less than (1 if x < y else 0)
    >            2        Greater than (1 if x > y else 0)
+   <=
+   >=
+   =, ==, eq
+   !=, !==, ne
    mod          2        Modulus (x % y)
    abs          1        Absolute value (|x|)
    sqrt         1        Square root (sqrt(x))
@@ -83,6 +87,8 @@ OPS = [
     Operator('* x', operator.mul, chainable=True),
     Operator('^', operator.pow),
     Operator('/', operator.truediv, chainable=True),
+    Operator('= == eq', operator.eq),
+    Operator('!= !== ne', operator.ne),
     Operator('< lt', operator.lt),
     Operator('> gt', operator.gt),
     Operator('<= le lte', operator.le),
