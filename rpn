@@ -4,8 +4,8 @@ import math
 import operator
 import re
 import sys
-from dataclasses import dataclass
-from typing import Any
+from dataclasses import dataclass, field
+from typing import Any, Callable, Union, Optional
 
 
 def help():
@@ -63,34 +63,41 @@ def fail(*args):
 
 @dataclass
 class Operator:
-    func: Any
-    arguments: int = 2
+    symbol: str
+    func: Callable
+    arguments: Union[int, str] = 2
     arg_pre_fn: Any = None
+    chainable: bool = False
 
 
-ops = {
-    '+': Operator(operator.add),
-    '-': Operator(operator.sub),
-    '*': Operator(operator.mul),
-    'x': Operator(operator.mul),
-    '^': Operator(operator.pow),
-    '/': Operator(operator.truediv),
-    '<': Operator(operator.lt),
-    '>': Operator(operator.gt),
-    '<=': Operator(operator.le),
-    '>=': Operator(operator.ge),
-    '<<': Operator(operator.lshift, arg_pre_fn=int),
-    '>>': Operator(operator.rshift, arg_pre_fn=int),
-    'mod': Operator(operator.mod),
-    'abs': Operator(operator.abs, 1),
-    'sqrt': Operator(math.sqrt, 1),
-    'sum': Operator(sum, 'all'),
-    'product': Operator(math.prod, 'all'),
-    'prod': Operator(math.prod, 'all'),
-    'drop': Operator(lambda x: x[:-1], 'all'),  # drop
-    'swap': Operator(lambda x, y: [y, x]),
-    'dupe': Operator(lambda x: [x, x], 1),
-}
+@dataclass
+class ParsedArgument:
+    operator: Optional[Operator] = None
+    number: Optional[float] = None
+    text: Optional[str] = None
+
+
+OPS = [
+    Operator('+', operator.add, chainable=True),
+    Operator('-', operator.sub, chainable=True),
+    Operator('* x', operator.mul, chainable=True),
+    Operator('^', operator.pow),
+    Operator('/', operator.truediv, chainable=True),
+    Operator('< lt', operator.lt),
+    Operator('> gt', operator.gt),
+    Operator('<= le lte', operator.le),
+    Operator('>= ge gte', operator.ge),
+    Operator('<<', operator.lshift, arg_pre_fn=int),
+    Operator('>>', operator.rshift, arg_pre_fn=int),
+    Operator('mod', operator.mod),
+    Operator('abs', operator.abs, 1),
+    Operator('sqrt', math.sqrt, 1),
+    Operator('sum', sum, 'all'),
+    Operator('product prod', math.prod, 'all'),
+    Operator('drop', lambda x: x[:-1], 'all'),
+    Operator('swap', lambda x, y: [y, x]),
+    Operator('dupe', lambda x: [x, x], 1),
+]
 
 
 def print_stack(stack):
@@ -101,36 +108,41 @@ def print_stack(stack):
             print(f"{x:.4f}")
 
 
-def split_args(*args):
+class InvalidArgument(Exception):
+    pass
+
+
+def split_args(*args):  # ParsedArgument
     num_re = re.compile(r'([-+]?[0-9]*\.?[0-9]+(?:[eE][0-9]+)?)')
     for arg in args:
         arg = arg.strip().lower()
-        while matches := num_re.match(arg):
+        if matches := num_re.findall(arg):
+            assert len(matches) == 1
             num = matches[0]
-            arg = arg[len(num):]
-            yield num
-        if arg:
-            if arg in ops.keys():
-                yield arg
-            elif arg.startswith('_'):
-                yield arg
-            else:
-                for op in arg:
-                    yield op
+            # arg = arg[len(num):]
+            yield ParsedArgument(number=float(num))
+        elif arg[0] == '_':
+            yield ParsedArgument(text=arg)
+        elif op := get_op(arg):
+            yield ParsedArgument(operator=op)
+        else:
+            raise InvalidArgument(arg)
+
+
+def get_op(arg) -> Optional[Operator]:
+    for op in OPS:
+        if arg in op.symbol.split():
+            return op
+    return None
 
 
 def rpn(args):
     stack = []
     for arg in split_args(*args):
-        if arg.startswith('_'):
-            stack.append(arg)
+        if text_or_number := arg.text or arg.number:
+            stack.append(text_or_number)
             continue
-        try:
-            stack.append(float(arg))
-            continue
-        except ValueError:
-            pass
-        op = ops[arg]
+        op = arg.operator
         if op.arguments == 'all':
             func_args = [stack]
             stack = []
