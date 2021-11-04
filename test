@@ -25,5 +25,6 @@ _eq 0.7071 2 sqrt 1 swap /
 _eq 0.7071 2 -0.5 '^'
 _eq 1.0000 1 2 '<'
 _eq 65536.0000 1 16 '<<'
+_eq 120.0000 5 4 3 2 1 product
 
 echo "$TESTS passed"
