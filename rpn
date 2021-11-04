@@ -21,10 +21,11 @@ Operator    Arguments    Description
    >>           2        Right shift (x >> y)
    <            2        Less than (1 if x < y else 0)
    >            2        Greater than (1 if x > y else 0)
-   <=
-   >=
-   =, ==, eq
-   !=, !==, ne
+   <=           2
+   >=           2
+   =, ==, eq    2
+   !=, !==, ne  2
+   not          1
    mod          2        Modulus (x % y)
    abs          1        Absolute value (|x|)
    sqrt         1        Square root (sqrt(x))
@@ -72,6 +73,7 @@ class Operator:
     arguments: Union[int, str] = 2
     arg_pre_fn: Any = None
     chainable: bool = False
+    help: str = ""
 
 
 @dataclass
@@ -82,17 +84,18 @@ class ParsedArgument:
 
 
 OPS = [
-    Operator('+', operator.add, chainable=True),
-    Operator('-', operator.sub, chainable=True),
-    Operator('* x', operator.mul, chainable=True),
-    Operator('^', operator.pow),
-    Operator('/', operator.truediv, chainable=True),
-    Operator('= == eq', operator.eq),
-    Operator('!= !== ne', operator.ne),
-    Operator('< lt', operator.lt),
-    Operator('> gt', operator.gt),
-    Operator('<= le lte', operator.le),
-    Operator('>= ge gte', operator.ge),
+    Operator('+', operator.add, chainable=True, help="add (x+y)"),
+    Operator('-', operator.sub, chainable=True, help="subtract (x-y)"),
+    Operator('* x', operator.mul, chainable=True, help="multiply (x*y)"),
+    Operator('^', operator.pow, help="power (x^y)"),
+    Operator('/', operator.truediv, chainable=True, help="divide (x/y)"),
+    Operator('= == eq', operator.eq, help="equality (1 if x=y else 0)"),
+    Operator('!= !== ne', operator.ne, help="non-equality (0 if x=y else 1)"),
+    Operator('not', operator.not_, 1, help="0 if x != 0 else 1"),
+    Operator('< lt', operator.lt, help="less than (1 if x<y else 0)"),
+    Operator('> gt', operator.gt, help="greater than (1 if x>y else 0)"),
+    Operator('<= le lte', operator.le, help="less than or equal (1 if x<=y else 0)"),
+    Operator('>= ge gte', operator.ge, help="greater than or equal (1 if x>=y else 0)"),
     Operator('<<', operator.lshift, arg_pre_fn=int),
     Operator('>>', operator.rshift, arg_pre_fn=int),
     Operator('mod', operator.mod),
