@@ -5,7 +5,7 @@ import operator
 import re
 import sys
 from dataclasses import dataclass, field
-from typing import Any, Callable, Union, Optional
+from typing import Any, Callable, Union, Optional, Generator
 
 
 def help():
@@ -99,14 +99,13 @@ class InvalidArgument(Exception):
     pass
 
 
-def split_args(*args):  # ParsedArgument
+def parse_args(*args) -> Generator[ParsedArgument, None, None]:
     num_re = re.compile(r'([-+]?[0-9]*\.?[0-9]+(?:[eE][0-9]+)?)')
     for arg in args:
         arg = arg.strip().lower()
         if matches := num_re.findall(arg):
             assert len(matches) == 1
             num = matches[0]
-            # arg = arg[len(num):]
             yield ParsedArgument(number=float(num))
         elif arg[0] == '_':
             yield ParsedArgument(text=arg)
@@ -125,7 +124,7 @@ def get_op(arg) -> Optional[Operator]:
 
 def rpn(args):
     stack = []
-    for arg in split_args(*args):
+    for arg in parse_args(*args):
         if text_or_number := arg.text or arg.number:
             stack.append(text_or_number)
             continue
