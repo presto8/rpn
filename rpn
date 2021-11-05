@@ -94,6 +94,7 @@ OPS = [
     Operator('drop d', lambda x: x[:-1], 'all', help="discard top item of stack ([z y x] -> [z y])"),
     Operator('swap', lambda x, y: [y, x], help="swap x and y on the stack ([y x] -> [x y])"),
     Operator('dupe', lambda x: [x, x], 1, help="make a copy of top item of stack ([y x] -> [y x x])"),
+    Operator('rotate', lambda x: [x[-1]] + x[:-1], 'all', help="rotate top of stack to the bottom ([z y x] -> [x z y])"),
 ]
 
 
