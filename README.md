@@ -1,5 +1,5 @@
 # rpn
-A console-based RPN calculator
+A console-based RPN calculator, inspired by the HP48 and HP42s.
 
 # Commands (Operators)
 
