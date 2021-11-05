@@ -9,34 +9,12 @@ from typing import Any, Callable, Union, Optional
 
 
 def help():
-    print("""rpn by Preston Hunt (https://github.com/presto8/rpn)
-
-Operator    Arguments    Description
-   +            2        Add (x+y)
-   -            2        Subtract (x-y)
-   x *          2        Multiply (x*y)
-   /            2        Divide (x/y)
-   ^            2        Power (x^y)
-   <<           2        Left shift (x << y)
-   >>           2        Right shift (x >> y)
-   <            2        Less than (1 if x < y else 0)
-   >            2        Greater than (1 if x > y else 0)
-   <=           2
-   >=           2
-   =, ==, eq    2
-   !=, !==, ne  2
-   not          1
-   mod          2        Modulus (x % y)
-   abs          1        Absolute value (|x|)
-   sqrt         1        Square root (sqrt(x))
-   sum        Stack      Sum of entire stack (x + y + z + w + ...)
-   product    Stack      Product of entire stack (x * y * z * w * ...)
-   prod       Stack      Alias for product
-   drop         1        Drop 1 item from stack
-   swap         2        Swap x and y on the stack
-   dupe         1        Make dupliate of top item on stack
-   _text        0        Push "text" onto stack
-""")
+    print("rpn by Preston Hunt (https://github.com/presto8/rpn)\n")
+    templ = "  {:^12}  {:^10}  {}"
+    print(templ.format("Symbol", "# Args", "Description"))
+    for op in OPS:
+        print(templ.format(op.symbol, str(op.arguments), op.help))
+    print(templ.format("_text", "0", "push 'text' onto stack"))
 
 
 class Rpn:
@@ -96,16 +74,16 @@ OPS = [
     Operator('> gt', operator.gt, help="greater than (1 if x>y else 0)"),
     Operator('<= le lte', operator.le, help="less than or equal (1 if x<=y else 0)"),
     Operator('>= ge gte', operator.ge, help="greater than or equal (1 if x>=y else 0)"),
-    Operator('<<', operator.lshift, arg_pre_fn=int),
-    Operator('>>', operator.rshift, arg_pre_fn=int),
-    Operator('mod', operator.mod),
-    Operator('abs', operator.abs, 1),
-    Operator('sqrt', math.sqrt, 1),
-    Operator('sum', sum, 'all'),
-    Operator('product prod', math.prod, 'all'),
-    Operator('drop', lambda x: x[:-1], 'all'),
-    Operator('swap', lambda x, y: [y, x]),
-    Operator('dupe', lambda x: [x, x], 1),
+    Operator('<<', operator.lshift, arg_pre_fn=int, help="left shift (x<<y)"),
+    Operator('>>', operator.rshift, arg_pre_fn=int, help="right shift (x>>y)"),
+    Operator('mod %', operator.mod, help="modulus (x % y)"),
+    Operator('abs', operator.abs, 1, help="absolute value (|x|)"),
+    Operator('sqrt', math.sqrt, 1, help="square root (sqrt(x))"),
+    Operator('sum', sum, 'all', help="sum of entire stack (x+y+z+w+...)"),
+    Operator('product prod', math.prod, 'all', help="product of entire stack (x+y+z+w+...)"),
+    Operator('drop d', lambda x: x[:-1], 'all', help="discard top item of stack"),
+    Operator('swap', lambda x, y: [y, x], help="swap x and y on the stack"),
+    Operator('dupe', lambda x: [x, x], 1, help="make a copy of top item of stack"),
 ]
 
 
