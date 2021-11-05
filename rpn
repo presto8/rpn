@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import argparse
 import math
 import operator
 import re
@@ -8,13 +9,15 @@ from dataclasses import dataclass, field
 from typing import Any, Callable, Union, Optional, Generator
 
 
-def help():
-    print("rpn by Preston Hunt (https://github.com/presto8/rpn)\n")
+def format_help():
+    out = []
+    out += ["rpn by Preston Hunt (https://github.com/presto8/rpn)"]
     templ = "  {:^12}  {:^10}  {}"
-    print(templ.format("Symbol", "# Args", "Description"))
+    out += [templ.format("Symbol", "# Args", "Description")]
     for op in OPS:
-        print(templ.format(op.symbol, str(op.arguments), op.help))
-    print(templ.format("_text", "0", "push 'text' onto stack"))
+        out += [templ.format(op.symbol, str(op.arguments), op.help)]
+    out += [templ.format("_text", "0", "push 'text' onto stack")]
+    return "\n".join(out)
 
 
 class Rpn:
@@ -55,7 +58,7 @@ class Operator:
 
 
 @dataclass
-class ParsedArgument:
+class StackArgument:
     operator: Optional[Operator] = None
     number: Optional[float] = None
     text: Optional[str] = None
@@ -99,18 +102,18 @@ class InvalidArgument(Exception):
     pass
 
 
-def parse_args(*args) -> Generator[ParsedArgument, None, None]:
+def parse_stack(*args) -> Generator[StackArgument, None, None]:
     num_re = re.compile(r'([-+]?[0-9]*\.?[0-9]+(?:[eE][0-9]+)?)')
     for arg in args:
         arg = arg.strip().lower()
         if matches := num_re.findall(arg):
             assert len(matches) == 1
             num = matches[0]
-            yield ParsedArgument(number=float(num))
+            yield StackArgument(number=float(num))
         elif arg[0] == '_':
-            yield ParsedArgument(text=arg)
+            yield StackArgument(text=arg)
         elif op := get_op(arg):
-            yield ParsedArgument(operator=op)
+            yield StackArgument(operator=op)
         else:
             raise InvalidArgument(arg)
 
@@ -124,7 +127,7 @@ def get_op(arg) -> Optional[Operator]:
 
 def rpn(args):
     stack = []
-    for arg in parse_args(*args):
+    for arg in parse_stack(*args):
         if text_or_number := arg.text or arg.number:
             stack.append(text_or_number)
             continue
@@ -148,9 +151,14 @@ def rpn(args):
     return stack
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(epilog=format_help(),
+                                     formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('stack', nargs='*', help='stack arguments')
+    return parser.parse_args()
+
+
 if __name__ == '__main__':
-    if len(sys.argv) == 2 and sys.argv[1] in ["-h", "--help"]:
-        help()
-    else:
-        stack = rpn(sys.argv[1:])
-        print_stack(stack)
+    ARGS = parse_args()
+    stack = rpn(ARGS.stack)
+    print_stack(stack)
