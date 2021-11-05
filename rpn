@@ -12,6 +12,13 @@ from typing import Any, Callable, Union, Optional, Generator
 def format_help():
     out = []
     out += ["rpn by Preston Hunt (https://github.com/presto8/rpn)"]
+    out += ["""
+Hewlett-Packard RPN convention is used in the examples below, meaning x is the
+top (most recent) item on the stack, y is before that, then z, w, etc. When
+displayed horizontally, the top of the stack is on the right; given [w z y x],
+x is the top. When displayed vertically, the stack order is reversed (x is
+shown on the bottom).
+"""]
     templ = "  {:^12}  {:^10}  {}"
     out += [templ.format("Symbol", "# Args", "Description")]
     for op in OPS:
@@ -65,28 +72,28 @@ class StackArgument:
 
 
 OPS = [
-    Operator('+', operator.add, chainable=True, help="add (x+y)"),
-    Operator('-', operator.sub, chainable=True, help="subtract (x-y)"),
-    Operator('* x', operator.mul, chainable=True, help="multiply (x*y)"),
-    Operator('^', operator.pow, help="power (x^y)"),
-    Operator('/', operator.truediv, chainable=True, help="divide (x/y)"),
-    Operator('= == eq', operator.eq, help="equality (1 if x=y else 0)"),
-    Operator('!= !== ne', operator.ne, help="non-equality (0 if x=y else 1)"),
+    Operator('+', operator.add, chainable=True, help="add (y+x)"),
+    Operator('-', operator.sub, chainable=True, help="subtract (y-x)"),
+    Operator('* x', operator.mul, chainable=True, help="multiply (y*x)"),
+    Operator('^', operator.pow, help="power (y^x)"),
+    Operator('/', operator.truediv, chainable=True, help="divide (y/x)"),
+    Operator('= == eq', operator.eq, help="equality (1 if y=x else 0)"),
+    Operator('!= !== ne', operator.ne, help="non-equality (0 if y=x else 1)"),
     Operator('not', operator.not_, 1, help="0 if x != 0 else 1"),
-    Operator('< lt', operator.lt, help="less than (1 if x<y else 0)"),
-    Operator('> gt', operator.gt, help="greater than (1 if x>y else 0)"),
-    Operator('<= le lte', operator.le, help="less than or equal (1 if x<=y else 0)"),
-    Operator('>= ge gte', operator.ge, help="greater than or equal (1 if x>=y else 0)"),
-    Operator('<<', operator.lshift, arg_pre_fn=int, help="left shift (x<<y)"),
-    Operator('>>', operator.rshift, arg_pre_fn=int, help="right shift (x>>y)"),
-    Operator('mod %', operator.mod, help="modulus (x % y)"),
+    Operator('< lt', operator.lt, help="less than (1 if y<x else 0)"),
+    Operator('> gt', operator.gt, help="greater than (1 if y>x else 0)"),
+    Operator('<= le lte', operator.le, help="less than or equal (1 if y<=x else 0)"),
+    Operator('>= ge gte', operator.ge, help="greater than or equal (1 if y>=x else 0)"),
+    Operator('<<', operator.lshift, arg_pre_fn=int, help="left shift (y<<x)"),
+    Operator('>>', operator.rshift, arg_pre_fn=int, help="right shift (y>>x)"),
+    Operator('mod %', operator.mod, help="modulus (y % x)"),
     Operator('abs', operator.abs, 1, help="absolute value (|x|)"),
     Operator('sqrt', math.sqrt, 1, help="square root (sqrt(x))"),
     Operator('sum', sum, 'all', help="sum of entire stack (x+y+z+w+...)"),
-    Operator('product prod', math.prod, 'all', help="product of entire stack (x+y+z+w+...)"),
-    Operator('drop d', lambda x: x[:-1], 'all', help="discard top item of stack"),
-    Operator('swap', lambda x, y: [y, x], help="swap x and y on the stack"),
-    Operator('dupe', lambda x: [x, x], 1, help="make a copy of top item of stack"),
+    Operator('product prod', math.prod, 'all', help="product of entire stack (x*y*z*w*...)"),
+    Operator('drop d', lambda x: x[:-1], 'all', help="discard top item of stack ([z y x] -> [z y])"),
+    Operator('swap', lambda x, y: [y, x], help="swap x and y on the stack ([y x] -> [x y])"),
+    Operator('dupe', lambda x: [x, x], 1, help="make a copy of top item of stack ([y x] -> [y x x])"),
 ]
 
 
