@@ -4,22 +4,30 @@ A console-based RPN calculator
 # Commands (Operators)
 
 ```
-Operator    Arguments    Description
-   +            2        Add (x+y)
-   -            2        Subtract (x-y)
-   x *          2        Multiply (x*y)
-   /            2        Divide (x/y)
-   ^            2        Power (x^y)
-   <<           2        Left shift (x << y)
-   >>           2        Right shift (x >> y)
-   <            2        Less than (1 if x < y else 0)
-   >            2        Greater than (1 if x > y else 0)
-   mod          2        Modulus (x % y)
-   abs          1        Absolute value (|x|)
-   sqrt         1        Square root (sqrt(x))
-   sum        Stack      Sum of entire stack (x + y + z + w + ...)
-   drop         1        Drop 1 item from stack
-   _text        0        Push "text" onto stack
+     Symbol       # Args    Description
+       +            2       add (x+y)
+       -            2       subtract (x-y)
+      * x           2       multiply (x*y)
+       ^            2       power (x^y)
+       /            2       divide (x/y)
+    = == eq         2       equality (1 if x=y else 0)
+   != !== ne        2       non-equality (0 if x=y else 1)
+      not           1       0 if x != 0 else 1
+      < lt          2       less than (1 if x<y else 0)
+      > gt          2       greater than (1 if x>y else 0)
+   <= le lte        2       less than or equal (1 if x<=y else 0)
+   >= ge gte        2       greater than or equal (1 if x>=y else 0)
+       <<           2       left shift (x<<y)
+       >>           2       right shift (x>>y)
+     mod %          2       modulus (x % y)
+      abs           1       absolute value (|x|)
+      sqrt          1       square root (sqrt(x))
+      sum          all      sum of entire stack (x+y+z+w+...)
+  product prod     all      product of entire stack (x+y+z+w+...)
+     drop d        all      discard top item of stack
+      swap          2       swap x and y on the stack
+      dupe          1       make a copy of top item of stack
+     _text          0       push 'text' onto stack
 ```
 
 # Examples
