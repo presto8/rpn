@@ -88,6 +88,7 @@ OPS = [
     Operator('>>', operator.rshift, arg_pre_fn=int, help="right shift (y>>x)"),
     Operator('mod %', operator.mod, help="modulus (y % x)"),
     Operator('abs', operator.abs, 1, help="absolute value (|x|)"),
+    Operator('neg', operator.neg, 1, help="negate (-x)"),
     Operator('sqrt', math.sqrt, 1, help="square root (sqrt(x))"),
     Operator('sum', sum, 'all', help="sum of entire stack (x+y+z+w+...)"),
     Operator('product prod', math.prod, 'all', help="product of entire stack (x*y*z*w*...)"),
